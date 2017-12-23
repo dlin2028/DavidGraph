@@ -10,11 +10,18 @@ namespace DavidGraph
     {
         public Vertex<T> A;
         public Vertex<T> B;
+        public int Weight = 0;
 
-        public Edge(Vertex<T> a, Vertex<T> b)
+        public Edge(Vertex<T> a, Vertex<T> b, int weight = 0)
         {
             A = a;
             B = b;
+            Weight = weight;
+        }
+        
+        int CompareTo(Edge<T> b)
+        {
+            return Weight.CompareTo(b.Weight);
         }
     }
 }

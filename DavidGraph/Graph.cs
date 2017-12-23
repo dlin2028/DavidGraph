@@ -8,13 +8,25 @@ namespace DavidGraph
 {
     class Graph<T>
     {
-        List<Vertex<T>> Verticies;
+        public Dictionary<T, Vertex<T>> Verticies;
+
+        private List<Vertex<T>> verticies;
 
         public Graph(List<Vertex<T>> initialNodes)
         {
-            Verticies = initialNodes;
+            verticies = initialNodes;
+            Verticies = new Dictionary<T, Vertex<T>>();
+
+            foreach (Vertex<T> vertex in verticies)
+            {
+                Verticies.Add(vertex.Item, vertex);
+            }
         }
 
+        public bool AddPair(T a, T b)
+        {
+            return AddPair(Verticies[a], Verticies[b]);
+        }
         public bool AddPair(Vertex<T> a, Vertex<T> b)
         {
             try
@@ -30,15 +42,16 @@ namespace DavidGraph
 
         public void AddVertex(Vertex<T> vertex)
         {
-            Verticies.Add(vertex);
+            verticies.Add(vertex);
+            Verticies.Add(vertex.Item, vertex);
         }
 
         public bool RemoveVertex(Vertex<T> vertex)
         {
-            if(Verticies.Contains(vertex))
+            if (verticies.Contains(vertex))
             {
                 vertex.RemoveEdges();
-                Verticies.Remove(vertex);
+                verticies.Remove(vertex);
                 return true;
             }
             return false;
@@ -46,43 +59,55 @@ namespace DavidGraph
 
         public bool HasVertex(Vertex<T> vertex)
         {
-            return Verticies.Contains(vertex);
+            return verticies.Contains(vertex);
         }
 
-        public List<Vertex<T>> queue;
+
+        Queue<Vertex<T>> queue;
+        List<Vertex<T>> visited;
+        public void BreadthFirstTrasversal(Vertex<T> input)
+        {
+            queue = new Queue<Vertex<T>>();
+            visited = new List<Vertex<T>>();
+            queue.Enqueue(input);
+            visited.Add(input);
+            Console.WriteLine(input.Item);
+
+            while (queue.Count > 0)
+            {
+                Vertex<T> currentNode = queue.Dequeue();
+                foreach(Edge<T> edge in currentNode.Edges)
+                {
+                    if(!visited.Contains(edge.B))
+                    {
+                        Console.WriteLine(edge.B.Item);
+                        queue.Enqueue(edge.B);
+                        visited.Add(edge.B);
+                    }
+                }
+            }
+        }
+
+        public Stack<Vertex<T>> stack;
         public void DepthFirstTrasversal(Vertex<T> input)
         {
-            queue = new List<Vertex<T>>();
+            stack = new Stack<Vertex<T>>();
+            stack.Push(input);
             depthTrasversal(input);
         }
         private void depthTrasversal(Vertex<T> currentNode)
         {
             Console.WriteLine(currentNode.Item);
+            if(currentNode.Edges.Count == 0)
+            {
+                stack.Pop();
+            }
             foreach (Edge<T> edge in currentNode.Edges)
             {
-                if(queue.Contains(edge.B))
+                if (!stack.Contains(edge.B))
                 {
-                    return;
-                }
-                queue.Add(edge.B);
-                depthTrasversal(edge.B);
-            }
-        }
-
-        public void BreadthFirstTrasversal(Vertex<T> input)
-        {
-            queue = new List<Vertex<T>>();
-            queue.Add(input);
-            while(queue.Count != 0)
-            {
-                foreach(Vertex<T> vertex in queue)
-                {
-                    Console.WriteLine(vertex.Item);
-                    queue.Remove(vertex);
-                    foreach (Edge<T> edge in input.Edges)
-                    {
-                        queue.Add(edge.B);
-                    }
+                    stack.Push(edge.B);
+                    depthTrasversal(edge.B);
                 }
             }
         }
