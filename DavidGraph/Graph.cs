@@ -23,15 +23,15 @@ namespace DavidGraph
             }
         }
 
-        public bool AddPair(T a, T b)
+        public bool AddPair(T a, T b, int weight)
         {
-            return AddPair(Verticies[a], Verticies[b]);
+            return AddPair(Verticies[a], Verticies[b], weight);
         }
-        public bool AddPair(Vertex<T> a, Vertex<T> b)
+        public bool AddPair(Vertex<T> a, Vertex<T> b, int weight)
         {
             try
             {
-                a.AddEdge(b);
+                a.AddEdge(b, weight);
             }
             catch
             {
@@ -76,9 +76,9 @@ namespace DavidGraph
             while (queue.Count > 0)
             {
                 Vertex<T> currentNode = queue.Dequeue();
-                foreach(Edge<T> edge in currentNode.Edges)
+                foreach (Edge<T> edge in currentNode.Edges)
                 {
-                    if(!visited.Contains(edge.B))
+                    if (!visited.Contains(edge.B))
                     {
                         Console.WriteLine(edge.B.Item);
                         queue.Enqueue(edge.B);
@@ -98,7 +98,7 @@ namespace DavidGraph
         private void depthTrasversal(Vertex<T> currentNode)
         {
             Console.WriteLine(currentNode.Item);
-            if(currentNode.Edges.Count == 0)
+            if (currentNode.Edges.Count == 0)
             {
                 stack.Pop();
             }
@@ -110,6 +110,55 @@ namespace DavidGraph
                     depthTrasversal(edge.B);
                 }
             }
+        }
+        
+        public void GetPathTo(Vertex<T> start, Vertex<T> end)
+        {
+
+        }
+
+        public void UpdatePaths(Vertex<T> start)
+        {
+            foreach (Vertex<T> v in verticies)
+            {
+                v.Distance = int.MaxValue;
+                v.Host = null;
+                v.Visited = false;
+            }
+
+            Queue<Vertex<T>> que = new Queue<Vertex<T>>();
+            que.Enqueue(start);
+            start.Distance = 0;
+
+            while (que.Count != 0)
+            {
+                Vertex<T> currentNode = que.Dequeue();
+                currentNode.Visited = true;
+
+                foreach (Edge<T> edge in currentNode.Edges)
+                {
+                    Vertex<T> friend = edge.B;
+
+                    int newDistance = currentNode.Distance + edge.Weight;
+                    if (!friend.Visited)
+                    {
+                        friend.Distance = newDistance;
+                        friend.Host = currentNode;
+                        que.Enqueue(friend);
+                    }
+                    else if (friend.Distance > newDistance && friend.Visited)
+                    {
+                        friend.Distance = newDistance;
+                        friend.Host = currentNode;
+                        que.Enqueue(friend);
+                    }
+                }
+            }
+        }
+
+        public void GetPath(Vertex<T> vertex)
+        {
+
         }
     }
 }

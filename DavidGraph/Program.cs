@@ -28,7 +28,7 @@ namespace DavidGraph
                     string nodeB = Console.ReadLine();
                     Console.Write("Weight: ");
                     string weight = Console.ReadLine();
-                    graph.AddPair(int.Parse(nodeA), int.Parse(nodeB));
+                    graph.AddPair(int.Parse(nodeA), int.Parse(nodeB), int.Parse(weight));
                     Console.WriteLine("Done");
                 }
                 else if(input == "addvertex")
@@ -83,11 +83,16 @@ namespace DavidGraph
                     {
                         graph.AddVertex(new Vertex<int>(i+1));
                     }
-                    graph.AddPair(1, 2);
-                    graph.AddPair(1, 3);
-                    graph.AddPair(2, 4);
-                    graph.AddPair(3, 4);
-                    graph.AddPair(3, 5);
+                    graph.AddPair(1, 2, 3);
+                    graph.AddPair(2, 3, 1);
+                    graph.AddPair(1, 4, 1);
+                    graph.AddPair(2, 4, 1);
+                    graph.AddPair(4, 3, 5);
+                    graph.AddPair(2, 5, 5);
+                }
+                else if(input == "path")
+                {
+                    graph.UpdatePaths(graph.Verticies[1]);
                 }
                 else
                 {
