@@ -10,9 +10,9 @@ namespace DavidGraph
     {
         static void Main(string[] args)
         {
-            Graph<int> graph;
+            Graph<string> graph;
 
-            graph = new Graph<int>(new List<Vertex<int>>());
+            graph = new Graph<string>(new List<Vertex<string>>());
 
             while(true)
             {
@@ -28,22 +28,41 @@ namespace DavidGraph
                     string nodeB = Console.ReadLine();
                     Console.Write("Weight: ");
                     string weight = Console.ReadLine();
-                    graph.AddPair(int.Parse(nodeA), int.Parse(nodeB), int.Parse(weight));
+                    graph.AddPair(nodeA, nodeB, int.Parse(weight));
                     Console.WriteLine("Done");
+                }
+                else if (input == "removepair")
+                {
+                    Console.Write("Node A: ");
+                    string nodeA = Console.ReadLine();
+                    Console.Write("Node B: ");
+                    string nodeB = Console.ReadLine();
+                    graph.RemoveEdge(nodeA, nodeB);
+                    Console.WriteLine("Done");
+                }
+                else if(input == "updatepair")
+                {
+                    Console.Write("Node A: ");
+                    string nodeA = Console.ReadLine();
+                    Console.Write("Node B: ");
+                    string nodeB = Console.ReadLine();
+                    Console.Write("Weight: ");
+                    string weight = Console.ReadLine();
+                    graph.RemoveEdge(nodeA, nodeB);
+                    graph.AddPair(nodeA, nodeB, int.Parse(weight));
                 }
                 else if(input == "addvertex")
                 {
                     Console.Write("Value: ");
-                    int value = int.Parse(Console.ReadLine());
-                    Console.Write("Weight: ");
-                    graph.AddVertex(new Vertex<int>(value));
+                    string value = Console.ReadLine();
+                    graph.AddVertex(new Vertex<string>(value));
                     Console.WriteLine("Done");
                 }
                 else if(input == "removevertex")
                 {
                     Console.Write("value: ");
-                    int value = int.Parse(Console.ReadLine());
-                    if(graph.RemoveVertex(new Vertex<int>(value)))
+                    string value = Console.ReadLine();
+                    if (graph.RemoveVertex(new Vertex<string>(value)))
                     {
                         Console.WriteLine("Done");
                     }
@@ -55,14 +74,14 @@ namespace DavidGraph
                 else if(input == "hasvertex")
                 {
                     Console.Write("value: ");
-                    int value = int.Parse(Console.ReadLine());
-                    Console.WriteLine(graph.HasVertex(new Vertex<int>(value)));
+                    string value = Console.ReadLine();
+                    Console.WriteLine(graph.HasVertex(new Vertex<string>(value)));
                         
                 }
                 else if(input == "depth")
                 {
                     Console.Write("start node value: ");
-                    int value = int.Parse(Console.ReadLine());
+                    string value = Console.ReadLine();
 
                     Console.WriteLine("       Output       ");
                     Console.WriteLine("--------------------");
@@ -71,7 +90,7 @@ namespace DavidGraph
                 else if(input == "breadth")
                 {
                     Console.WriteLine("start node value: ");
-                    int value = int.Parse(Console.ReadLine());
+                    string value = Console.ReadLine();
 
                     Console.WriteLine("       Output       ");
                     Console.WriteLine("--------------------");
@@ -81,18 +100,35 @@ namespace DavidGraph
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        graph.AddVertex(new Vertex<int>(i+1));
+                        graph.AddVertex(new Vertex<string>((i+1).ToString()));
                     }
-                    graph.AddPair(1, 2, 3);
-                    graph.AddPair(2, 3, 1);
-                    graph.AddPair(1, 4, 1);
-                    graph.AddPair(2, 4, 1);
-                    graph.AddPair(4, 3, 5);
-                    graph.AddPair(2, 5, 5);
+                    graph.AddPair("1", "2", 3);
+                    graph.AddPair("2", "3", 1);
+                    graph.AddPair("1", "4", 1);
+                    graph.AddPair("2", "4", 1);
+                    graph.AddPair("4", "3", 5);
+                    graph.AddPair("2", "5", 5);
                 }
                 else if(input == "path")
                 {
-                    graph.UpdatePaths(graph.Verticies[1]);
+                    Console.WriteLine("start node value: ");
+                    string start = Console.ReadLine();
+                    Console.WriteLine("end node value: ");
+                    string end = Console.ReadLine();
+
+                    Stack<string> stack = graph.GetPathTo(start,end);
+
+                    Console.WriteLine("       Output       ");
+                    Console.WriteLine("--------------------");
+                    Console.Write("Distnce: ");
+                    Console.WriteLine(graph.Verticies[end].Distance);
+
+                    while (stack.Count > 0)
+                    {
+                        Console.WriteLine(stack.Pop());
+                    }
+
+
                 }
                 else
                 {

@@ -57,6 +57,39 @@ namespace DavidGraph
             return false;
         }
 
+        public void RemoveEdge(T a, T b)
+        {
+            Vertex<T> vertexA = Verticies[a];
+            Vertex<T> vertexB = Verticies[b];
+
+            for (int i = 0; i < vertexA.Edges.Count; i++)
+            {
+                if(vertexA.Edges[i].A == vertexA && vertexA.Edges[i].B == vertexB)
+                {
+                    vertexA.Edges.RemoveAt(i);
+                    break;
+                }
+            }
+            for (int i = 0; i < vertexB.Edges.Count; i++)
+            {
+                if (vertexB.Edges[i].A == vertexA && vertexB.Edges[i].B == vertexB)
+                {
+                    vertexB.Edges.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+        public void RemoveEdge(Edge<T> edge)
+        {
+            foreach (Vertex<T> vertex in verticies)
+            {
+                if (vertex.Edges.Contains(edge))
+                {
+                    vertex.Edges.Remove(edge);
+                }
+            }
+        }
+
         public bool HasVertex(Vertex<T> vertex)
         {
             return verticies.Contains(vertex);
@@ -87,8 +120,7 @@ namespace DavidGraph
                 }
             }
         }
-
-        public Stack<Vertex<T>> stack;
+        Stack<Vertex<T>> stack;
         public void DepthFirstTrasversal(Vertex<T> input)
         {
             stack = new Stack<Vertex<T>>();
@@ -111,10 +143,22 @@ namespace DavidGraph
                 }
             }
         }
-        
-        public void GetPathTo(Vertex<T> start, Vertex<T> end)
-        {
 
+
+        public Stack<T> GetPathTo(T startKey, T endKey)
+        {
+            Stack<Vertex<T>> temp =  GetPathTo(Verticies[startKey], Verticies[endKey]);
+            Stack<T> output = new Stack<T>();
+            while(temp.Count > 0)
+            {
+                output.Push(temp.Pop().Item);
+            }
+            return output;
+        }
+        public Stack<Vertex<T>> GetPathTo(Vertex<T> start, Vertex<T> end)
+        {
+            UpdatePaths(start);
+            return GetPath(end);
         }
 
         public void UpdatePaths(Vertex<T> start)
@@ -138,12 +182,17 @@ namespace DavidGraph
                 foreach (Edge<T> edge in currentNode.Edges)
                 {
                     Vertex<T> friend = edge.B;
+                    if(edge.B == currentNode)
+                    {
+                        continue;
+                    }
 
                     int newDistance = currentNode.Distance + edge.Weight;
                     if (!friend.Visited)
                     {
                         friend.Distance = newDistance;
                         friend.Host = currentNode;
+                        friend.Visited = true;
                         que.Enqueue(friend);
                     }
                     else if (friend.Distance > newDistance && friend.Visited)
@@ -155,10 +204,26 @@ namespace DavidGraph
                 }
             }
         }
-
-        public void GetPath(Vertex<T> vertex)
+        
+        public Stack<Vertex<T>> GetPath(T key)
         {
-
+            return GetPath(Verticies[key]);
+        }
+        public Stack<Vertex<T>> GetPath(Vertex<T> vertex)
+        {
+            Stack<Vertex<T>> stack1 = new Stack<Vertex<T>>();
+            Stack<Vertex<T>> stack2 = new Stack<Vertex<T>>();
+            stack1.Push(vertex);
+            while (vertex.Host != null)
+            {
+                stack1.Push(vertex.Host);
+                vertex = vertex.Host;
+            }
+            while(stack1.Count > 0)
+            {
+                stack2.Push(stack1.Pop());
+            }
+            return stack2;
         }
     }
 }

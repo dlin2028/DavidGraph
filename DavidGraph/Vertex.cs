@@ -10,7 +10,6 @@ namespace DavidGraph
     {
         public T Item;
         public List<Edge<T>> Edges;
-        public Dictionary<string, Stack<Vertex<T>>> Paths;
 
         public bool Visited;
         public int Distance;
